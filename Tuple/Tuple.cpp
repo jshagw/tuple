@@ -1,7 +1,6 @@
 // Tuple.cpp : 定义控制台应用程序的入口点。
 //
 
-#include "stdafx.h"
 #include <tuple>
 #include <memory>
 #include <string>
@@ -26,13 +25,13 @@ public:
 	template<typename _FirstType, typename..._Types>
 	void setParams(_FirstType&& ft, _Types&&... _Args)
 	{
-		_p = new_tuple_params(ft, _Args...);
+		_p = std::move(new_tuple_params(ft, _Args...));
 	}
 
 	template<typename _FirstType, typename..._Types>
 	bool getParams(_FirstType& ft, _Types&... _Args)
 	{
-		typedef TupleParams<typename std::remove_reference_t<_FirstType>, typename std::remove_reference_t<_Types>...> _TupleParamType;
+		using _TupleParamType = TupleParams<typename std::remove_reference_t<_FirstType>, typename std::remove_reference_t<_Types>...>;
 		std::shared_ptr<_TupleParamType> p = dynamic_pointer_cast<_TupleParamType, TupleParamsBase>(_p);
 		assert(p);
 		if (p)
@@ -47,16 +46,14 @@ public:
 	}
 
 private:
-	TupleParamsBasePtr _p;
+	std::shared_ptr<TupleParamsBase> _p;
 };
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	int i = 2;
 	string s = "333";
 	string& sref = s;
-	TupleParamsBasePtr p = new_tuple_params(i, s, sref);
-	TupleParamsBasePtr p2 = new_tuple_params(i);
 
 	typedef std::shared_ptr<unsigned char> BytePtr;
 	size_t blen = 1000;
