@@ -4,6 +4,7 @@
 
 #include <tuple>
 #include <memory>
+#include <share.h>
 
 template<class... _Types>
 class TupleParams;
@@ -12,14 +13,13 @@ template<>
 class TupleParams<>
 {
 public:
-	typedef TupleParams<> _Myt;
-	typedef std::shared_ptr<_Myt> _MyPtr;
+	typedef typename TupleParams<> _Myt;
 	TupleParams(){}
 	virtual ~TupleParams(){}
 
 private:
-	TupleParams(_Myt&);
-	_Myt& operator = (_Myt&);
+	TupleParams(_Myt&) = delete;
+	_Myt& operator = (_Myt&) = delete;
 };
 typedef TupleParams<> TupleParamsBase;
 
@@ -31,7 +31,7 @@ public:
 	typedef _This _This_type;
 	typedef TupleParams<_This, _Rest...> _Myt;
 	typedef std::tuple<typename std::remove_reference_t<_This_type>, typename std::remove_reference_t<_Rest>...> _ThisTuple;
-	TupleParams(_ThisTuple&& t)
+	TupleParams(_This&& t, _Rest&&...)
 		:_t(t)
 	{
 
@@ -49,9 +49,9 @@ public:
 	}
 
 private:
-	template<class _This, class... _Rest>
-	TupleParams(_Myt&);
-	_Myt& operator = (_Myt&);
+	//template<class _This, class... _Rest>
+	TupleParams(_Myt&) = delete;
+	_Myt& operator = (_Myt&) = delete;
 
 private:
 	_ThisTuple _t;
@@ -60,10 +60,11 @@ private:
 typedef std::shared_ptr<TupleParamsBase> TupleParamsBasePtr;
 
 template<typename _FirstType, typename..._Types>
-TupleParamsBasePtr new_tuple_params(_FirstType&& ft, _Types&&... _Args)
+decltype<auto> new_tuple_params(_FirstType&& ft, _Types&&... _Args)
 {
-	typedef TupleParams<typename std::remove_reference_t<_FirstType>, typename std::remove_reference_t<_Types>...> _TupleParamType;
-	return std::shared_ptr<_TupleParamType>(new _TupleParamType(std::make_tuple(std::forward<_FirstType>(ft), std::forward<_Types>(_Args)...)));
+	using _TupleParamType = TupleParams<typename std::remove_reference_t<_FirstType>, typename std::remove_reference_t<_Types>...>;
+	return std::make_unique<_TupleParamType>(std::forward<std::remove_reference_t<_FirstType>>(ft),
+		std::forward<std::remove_reference_t<_Types>>(_Args)...);
 }
 
 
