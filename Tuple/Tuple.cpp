@@ -63,7 +63,9 @@ int main(int argc, char* argv[])
 	pack.setParams(i, s, sref, bp, blen);
 
 	int n = 0;
-	string ss1, ss2;
+	string ss1;
+	string&& ss2 = "";
+	string &rs2 = ss2;
 	long l = 0;
 	size_t blen2;
 	BytePtr bp2;
