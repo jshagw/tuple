@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 	BytePtr bp(new unsigned char[blen]);
 
 	Packet pack;
-	pack.setParams(i, s, sref, bp, blen);
+	pack.setParams(3, s, sref, bp, blen);
 
 	int n = 0;
 	string ss1;

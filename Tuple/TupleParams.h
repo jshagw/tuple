@@ -13,6 +13,8 @@ class TupleParams<>
 {
 public:
 	typedef typename TupleParams<> _Myt;
+
+protected:
 	TupleParams(){}
 	virtual ~TupleParams(){}
 
@@ -20,6 +22,7 @@ private:
 	TupleParams(const _Myt&) = delete;
 	TupleParams(_Myt&&) = delete;
 	_Myt& operator = (_Myt&) = delete;
+	_Myt& operator = (_Myt&&) = delete;
 };
 using TupleParamsBase = TupleParams<> ;
 
@@ -34,15 +37,8 @@ public:
 
 	template<class _This, class... _Rest>
 	TupleParams(_This&& ft, _Rest&&... args)
-		:_t(std::forward<_This>(ft), std::forward<_Rest>(args)...)
-	{
-
-	}
-
-	virtual ~TupleParams()
-	{
-
-	}
+		:_t(std::forward<_This>(ft), std::forward<_Rest>(args)...){}
+	virtual ~TupleParams(){}
 
 public:
 	const _ThisTuple& getTuple(void) const noexcept
@@ -51,10 +47,10 @@ public:
 	}
 
 private:
-	TupleParams() = delete;
 	TupleParams(const _Myt&) = delete;
 	TupleParams(_Myt&&) = delete;
 	_Myt& operator = (_Myt&) = delete;
+	_Myt& operator = (_Myt&&) = delete;
 
 private:
 	_ThisTuple _t;
