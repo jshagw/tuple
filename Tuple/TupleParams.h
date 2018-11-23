@@ -18,7 +18,7 @@ protected:
 	TupleParams(){}
 	virtual ~TupleParams(){}
 
-private:
+public:
 	TupleParams(const _Myt&) = delete;
 	TupleParams(_Myt&&) = delete;
 	_Myt& operator = (_Myt&) = delete;
@@ -46,7 +46,7 @@ public:
 		return _t;
 	}
 
-private:
+public:
 	TupleParams(const _Myt&) = delete;
 	TupleParams(_Myt&&) = delete;
 	_Myt& operator = (_Myt&) = delete;
