@@ -25,18 +25,18 @@ public:
 	template<typename _FirstType, typename..._Types>
 	void setParams(_FirstType&& ft, _Types&&... _Args)
 	{
-		_p = std::move(new_tuple_params(ft, _Args...));
+		_p = new_tuple_params(ft, _Args...);
 	}
 
 	template<typename _FirstType, typename..._Types>
 	bool getParams(_FirstType& ft, _Types&... _Args)
 	{
-		using _TupleParamType = TupleParams<std::_Unrefwrap_t<_FirstType>, std::_Unrefwrap_t<_Types>...>;
-		std::shared_ptr<_TupleParamType> p = dynamic_pointer_cast<_TupleParamType, TupleParamsBase>(_p);
+		using _TupleType = typename TupleParams<std::_Unrefwrap_t<_FirstType>, std::_Unrefwrap_t<_Types>...>::_ThisTuple;
+		_TupleType* p = dynamic_cast<_TupleType*>(_p.get());
 		assert(p);
 		if (p)
 		{
-			std::tie(ft, _Args...) = p->getTuple();
+			std::tie(ft, _Args...) = *p;
 			return true;
 		}
 		else
@@ -46,7 +46,7 @@ public:
 	}
 
 private:
-	std::shared_ptr<TupleParamsBase> _p;
+	std::unique_ptr<TupleParamsBase> _p;
 };
 
 int main(int argc, char* argv[])
