@@ -33,15 +33,15 @@ class TupleParams<_This, _Rest...>
 public:
 	typedef _This _This_type;
 	typedef TupleParams<_This, _Rest...> _Myt;
-	typedef std::tuple<typename std::remove_reference_t<_This_type>, typename std::remove_reference_t<_Rest>...> _ThisTuple;
+	typedef std::tuple<_This_type, _Rest...> _ThisTuple;
 
-	template<class _This, class... _Rest>
-	TupleParams(_This&& ft, _Rest&&... args)
-		:_t(std::forward<_This>(ft), std::forward<_Rest>(args)...){}
+	template<class _This2, class... _Rest2>
+	constexpr TupleParams(_This2&& ft, _Rest2&&... args)
+		:_t(std::forward<_This2>(ft), std::forward<_Rest2>(args)...){}
 	virtual ~TupleParams(){}
 
 public:
-	const _ThisTuple& getTuple(void) const noexcept
+	constexpr _ThisTuple& getTuple(void) noexcept
 	{
 		return _t;
 	}
@@ -59,7 +59,7 @@ private:
 template<typename _FirstType, typename..._Types>
 decltype(auto) new_tuple_params(_FirstType&& ft, _Types&&... _Args)
 {
-	using _TupleParamType = TupleParams<typename std::remove_reference_t<_FirstType>, typename std::remove_reference_t<_Types>...>;
+	using _TupleParamType = TupleParams<std::_Unrefwrap_t<_FirstType>, std::_Unrefwrap_t<_Types>...>;
 	return std::make_shared<_TupleParamType>(std::forward<_FirstType>(ft), std::forward<_Types>(_Args)...);
 }
 

@@ -31,7 +31,7 @@ public:
 	template<typename _FirstType, typename..._Types>
 	bool getParams(_FirstType& ft, _Types&... _Args)
 	{
-		using _TupleParamType = TupleParams<typename std::remove_reference_t<_FirstType>, typename std::remove_reference_t<_Types>...>;
+		using _TupleParamType = TupleParams<std::_Unrefwrap_t<_FirstType>, std::_Unrefwrap_t<_Types>...>;
 		std::shared_ptr<_TupleParamType> p = dynamic_pointer_cast<_TupleParamType, TupleParamsBase>(_p);
 		assert(p);
 		if (p)
